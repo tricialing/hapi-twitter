@@ -1,0 +1,27 @@
+{
+  "name": "hapi-twitter",
+  "version": "0.0.1",
+  "description": "WDI 8 lesson to learn back-end using hapi.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:tricialing/hapi-twitter.git"
+  },
+  "keywords": [
+    "hapi",
+    "wdi"
+  ],
+  "author": "tricialing",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/tricialing/hapi-twitter/issues"
+  },
+  "homepage": "https://github.com/tricialing/hapi-twitter",
+  "dependencies": {
+    "hapi": "^8.8.0",
+    "hapi-mongodb": "^3.0.0"
+  }
+}
