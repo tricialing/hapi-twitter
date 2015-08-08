@@ -21,7 +21,12 @@
   },
   "homepage": "https://github.com/tricialing/hapi-twitter",
   "dependencies": {
+    "bcrypt": "^0.8.4",
+    "handlebars": "^3.0.3",
     "hapi": "^8.8.0",
-    "hapi-mongodb": "^3.0.0"
+    "hapi-mongodb": "^3.0.0",
+    "joi": "^6.6.1",
+    "path": "^0.11.14",
+    "yar": "^3.0.3"
   }
 }

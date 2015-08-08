@@ -1,6 +1,8 @@
+// the main and only that config the server. link to all node librarys and all of our own plugins (defines our routes)
+
 //1. Hapi is a class 
 var Hapi = require('hapi'); //the official name is hapi
-
+var Path =  require('path');
 //2. instanciate
 var server = new Hapi.Server();
 
@@ -16,15 +18,37 @@ server.connection({
   }
 });
 
+server.views({
+  engines: {
+    html: require('handlebars')
+  },
+  path: Path.join(__dirname, 'templates')
+});
+
 //4. require mongoDB 
 //any other dependencies
 var plugins = [
+  { register: require('./routes/users.js')},
+  { register: require('./routes/static-pages.js') },
+  { register: require('./routes/sessions.js') },
+  { 
+    register: require( 'yar'),
+    options: {
+      cookieOptions: {
+        password: 'asdasdasd',
+        isSecure: false
+      }
+    }
+  },
   // require mongo
-  {register: require('hapi-mongodb'),
+  {
+    register: require('hapi-mongodb'),
     options: {
       url: 'mongodb://127.0.0.1:27017/hapi-twitter',
-      setting: {
-        native_parser: false; //how mongodb do querying (getting post), so we rely on hapi
+      settings: {
+        db :{
+          native_parser: false //how mongodb do querying (getting post), so we rely on hapi
+        }
       }
     }
   }
@@ -41,3 +65,5 @@ server.register(plugins, function (err){
     console.log('info', 'Server running at: ' + server.info.uri);
   });
 });
+
+
