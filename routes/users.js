@@ -2,6 +2,8 @@
 var Joi = require('joi'); // What do JOI do? Object schema validation
 var Bcrypt = require('bcrypt'); // What is Bcrypt? Encryption / Hashing function
 
+var Auth = require('./auth');
+
 exports.register = function(server, options, next){
   //define routes
   server.route([
@@ -67,6 +69,11 @@ exports.register = function(server, options, next){
         method: 'GET',
         path: '/users',
         handler: function(request, reply) {
+         Auth.authenticated(request, function(session){
+          if (!session.authenticated) {
+            return reply (session);
+          }
+
           var db = request.server.plugins['hapi-mongodb'].db
 
           db.collection('users').find().toArray(function(err, users){
@@ -74,6 +81,9 @@ exports.register = function(server, options, next){
 
             reply(users);
           })
+          
+         });
+
         }
       }
     ]);

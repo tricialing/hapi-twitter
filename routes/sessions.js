@@ -24,23 +24,25 @@ exports.register = function(server, options, next){
           return (((1+Math.random())*0x10000)|0).toString(16).substring(1);
         };
 
-        //2. check passwork 
+        //2. check password
         Bcrypt.compare(user.password, userMongo.password, function(err, same){
             if (!same) {
               return reply({ authorized: false });
             }
 
-            //3. create a new session in the session collection 
+            //3. create a new session in the sessions collection 
             var session = {
               user_id: userMongo._id,
               session_id: randomKeyGenerator()
             };
 
             db.collection('sessions').insert(session, function(err, writeResult){
+              // reply(writeResult);
               if (err) {return reply('Internal MongoDB error', err); }
 
               //4. set the same session_id in the client's cookie 
-              request.session.set('happ_twitter_session', session);
+              request.session.set('hapi_twitter_session', session);
+              reply({ authorized: true });
             });
         });
       });
@@ -57,13 +59,31 @@ exports.register = function(server, options, next){
 
       Auth.authenticated(request, callback);
     }
+  },
+  {
+    method: 'DELETE',
+    path: '/sessions',
+    handler: function (request, reply) {
+      var session = request.session.get('hapi_twitter_session');
+      var db = request.server.plugins['hapi-mongodb'].db;
+
+      if (!session) {
+        return reply({ "message": "Already logged out" });
+      }
+
+      db.collection('sessions').remove({ "session_id": session.session_id }, function(err, writeResult){
+        if (err) {return reply('Interna; MongoDB error', err); }
+
+        reply(writeResult);
+      });
+    }
   }
-  ])
+  ]);
 
   next();
 };
 
 exports.register.attributes = {
-  name: 'sessions-routes',
+  name: 'sessions-route',
   version: '0.0.1'
 }
